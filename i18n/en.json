@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Derick Alangi"
+		]
+	},
+	"sparkpost-desc": "Send emails through the SparkPost API service from MediaWiki."
+}

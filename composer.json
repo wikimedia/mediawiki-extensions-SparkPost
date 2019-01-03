@@ -1,0 +1,30 @@
+{
+	"require": {
+		"php": ">=5.6",
+		"php-http/httplug": "^1.0",
+		"sparkpost/sparkpost": "^2.1.0",
+		"guzzlehttp/guzzle": "^6.3"
+	},
+	"require-dev": {
+		"php-http/guzzle6-adapter": "^1.0",
+		"jakub-onderka/php-parallel-lint": "1.0.0",
+		"jakub-onderka/php-console-highlighter": "0.3.2",
+		"mediawiki/mediawiki-codesniffer": "23.0.0",
+		"mediawiki/minus-x": "0.3.1"
+	},
+	"scripts": {
+		"test": [
+			"parallel-lint . --exclude vendor --exclude node_modules",
+			"phpcs -p -s",
+			"minus-x check ."
+		],
+		"fix": [
+			"phpcbf",
+			"minus-x fix ."
+		]
+	},
+	"config": {
+		"optimize-autoloader": true,
+		"prepend-autoloader": false
+	}
+}

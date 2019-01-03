@@ -1,0 +1,31 @@
+{
+	"name": "SparkPost",
+	"version": "1.0",
+	"author": [
+		"Derick Alangi"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:SparkPost",
+	"descriptionmsg": "sparkpost-desc",
+	"license-name": "GPL-2.0-or-later",
+	"requires": {
+		"MediaWiki": ">= 1.33.0"
+	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\SparkPost\\": "includes/"
+	},
+	"MessagesDirs": {
+		"SparkPost": [
+			"i18n"
+		]
+	},
+	"Hooks": {
+		"AlternateUserMailer": [
+			"MediaWiki\\SparkPost\\SPHooks::onAlternateUserMailer"
+		]
+	},
+	"load_composer_autoloader": true,
+	"config": {
+		"SparkPostAPIKey": ""
+	},
+	"manifest_version": 1
+}
