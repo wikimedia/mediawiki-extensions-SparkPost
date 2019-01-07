@@ -98,9 +98,6 @@ class SPHooks {
 			// Get $to and $from email addresses from the
 			// `array` and `MailAddress` object respectively
 			$results = $sparkpost->transmissions->post( [
-				'options' => [
-					'sandbox' => true
-				],
 				'content' => [
 					'from' => [
 						'name' => $from->name,
