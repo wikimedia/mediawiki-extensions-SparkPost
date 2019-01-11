@@ -29,7 +29,7 @@ use SparkPost\SparkPost;
  * http://www.gnu.org/copyleft/gpl.html
  *
  * @file
- * @author Alangi Derick <alangiderick@gmail.com>
+ * @author Derick Alangi <alangiderick@gmail.com>
  *
  * @link https://www.mediawiki.org/wiki/Extension:SparkPost Documentation
  * @ingroup Extensions
