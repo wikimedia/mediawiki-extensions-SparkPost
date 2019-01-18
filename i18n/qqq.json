@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "Derick Alangi"
-        ]
-    },
-    "sparkpost-desc": "{{desc|what=extension|name=SparkPost|url=https://www.mediawiki.org/wiki/Extension:SparkPost}}"
+	"@metadata": {
+		"authors": [
+			"Derick Alangi"
+		]
+	},
+	"sparkpost-desc": "{{desc|what=extension|name=SparkPost|url=https://www.mediawiki.org/wiki/Extension:SparkPost}}"
 }
