@@ -55,10 +55,10 @@ class SPHooks {
 		$subject,
 		$body
 	) {
-		$conf = RequestContext::getMain()->getConfig();
+		$configs = RequestContext::getMain()->getConfig();
 
-		// From "wgSparkPostAPIKey" in LocalSettings.php when defined.
-		$sparkpostAPIKey = $conf->get( 'SparkPostAPIKey' );
+		// From "$wgSparkPostAPIKey" in LocalSettings.php when defined.
+		$sparkpostAPIKey = $configs->get( 'SparkPostAPIKey' );
 
 		if ( $sparkpostAPIKey === "" || !isset( $sparkpostAPIKey ) ) {
 			throw new MWException(
@@ -69,7 +69,7 @@ class SPHooks {
 		$httpClient = new GuzzleAdapter( new Client() );
 		$sparkpost = new SparkPost( $httpClient, [ 'key' => $sparkpostAPIKey ] );
 
-		return self::sendEmail( $headers, $to, $from, $subject, $body, $sparkpost );
+		return self::sendEmail( $headers, $to, $from, $subject, $body, $sparkpost, $configs );
 	}
 
 	/**
@@ -81,6 +81,7 @@ class SPHooks {
 	 * @param string $subject
 	 * @param string $body
 	 * @param SparkPost|null $sparkpost
+	 * @param \Config $configs
 	 * @throws Exception
 	 *
 	 * @return bool
@@ -91,9 +92,28 @@ class SPHooks {
 		MailAddress $from,
 		$subject,
 		$body,
-		SparkPost $sparkpost = null
+		SparkPost $sparkpost = null,
+		$configs
 	) {
-		$sparkpost->setOptions( [ 'async' => false ] );
+		// Get options parameters from $configs if set in LocalSetting.php
+		// From "$wgSparkpostClickTracking", "$wgSparkpostOpenTracking" and
+		// "$wgSparkpostTransactional" respectively.
+		$click_tracking = $configs->get( 'SparkpostClickTracking' );
+		$open_tracking = $configs->get( 'SparkpostOpenTracking' );
+		$transactional = $configs->get( 'SparkpostTransactional' );
+
+		// Check to make sure they're set or default to normal behavior
+		$click_tracking = isset( $click_tracking ) ?: true;
+		$open_tracking = isset( $open_tracking ) ?: true;
+		$transactional = isset( $transactional ) ?: true;
+
+		$sparkpost->setOptions( [
+			'async' => false,
+			'click_tracking' => $click_tracking,
+			'open_tracking' => $open_tracking,
+			'transactional' => $transactional
+		] );
+
 		try {
 			// Get $to and $from email addresses from the
 			// `array` and `MailAddress` object respectively
