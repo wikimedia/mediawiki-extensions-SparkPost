@@ -102,16 +102,17 @@ class SPHooks {
 		$open_tracking = $configs->get( 'SparkPostOpenTracking' );
 		$transactional = $configs->get( 'SparkPostTransactional' );
 
-		$sparkpost->setOptions( [ 'async' => false ] );
+		$sparkpost->setOptions( [
+			'async' => false,
+			'click_tracking' => $click_tracking ?: false,
+			'open_tracking' => $open_tracking ?: false,
+			'transactional' => $transactional ?: false
+		] );
+
 		try {
 			// Get $to and $from email addresses from the
 			// `array` and `MailAddress` object respectively
 			$results = $sparkpost->transmissions->post( [
-				'options' => [
-					'click_tracking' => $click_tracking ?: false,
-					'open_tracking' => $open_tracking ?: false,
-					'transactional' => $transactional ?: false
-				],
 				'content' => [
 					'from' => [
 						'name' => $from->name,
