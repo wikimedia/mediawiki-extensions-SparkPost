@@ -98,20 +98,15 @@ class SPHooks {
 		// Get options parameters from $configs if set in LocalSetting.php
 		// From "$wgSparkpostClickTracking", "$wgSparkpostOpenTracking" and
 		// "$wgSparkpostTransactional" respectively.
-		$click_tracking = $configs->get( 'SparkpostClickTracking' );
-		$open_tracking = $configs->get( 'SparkpostOpenTracking' );
-		$transactional = $configs->get( 'SparkpostTransactional' );
-
-		// Check to make sure they're set or default to normal behavior
-		$click_tracking = isset( $click_tracking ) ?: true;
-		$open_tracking = isset( $open_tracking ) ?: true;
-		$transactional = isset( $transactional ) ?: true;
+		$click_tracking = $configs->get( 'SparkPostClickTracking' );
+		$open_tracking = $configs->get( 'SparkPostOpenTracking' );
+		$transactional = $configs->get( 'SparkPostTransactional' );
 
 		$sparkpost->setOptions( [
 			'async' => false,
-			'click_tracking' => $click_tracking,
-			'open_tracking' => $open_tracking,
-			'transactional' => $transactional
+			'click_tracking' => $click_tracking ?: false,
+			'open_tracking' => $open_tracking ?: false,
+			'transactional' => $transactional ?: false
 		] );
 
 		try {
