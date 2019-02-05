@@ -102,6 +102,9 @@ class SPHooks {
 		$open_tracking = $configs->get( 'SparkPostOpenTracking' );
 		$transactional = $configs->get( 'SparkPostTransactional' );
 
+		// T215249: Check to see if $wgUserEmailUseReplyTo is true;
+		$reply_to = $configs->get( 'UserEmailUseReplyTo' );
+
 		$sparkpost->setOptions( [ 'async' => false ] );
 		try {
 			// Get $to and $from email addresses from the
@@ -117,6 +120,7 @@ class SPHooks {
 						'name' => $from->name,
 						'email' => $from->address
 					],
+					'reply_to' => $reply_to ? $from->address : null,
 					'subject' => $subject,
 					'text' => $body
 				],
