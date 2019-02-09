@@ -55,10 +55,9 @@ class SPHooks {
 		$subject,
 		$body
 	) {
-		$configs = RequestContext::getMain()->getConfig();
-
+		$config = RequestContext::getMain()->getConfig();
 		// From "$wgSparkPostAPIKey" in LocalSettings.php when defined.
-		$sparkpostAPIKey = $configs->get( 'SparkPostAPIKey' );
+		$sparkpostAPIKey = $config->get( 'SparkPostAPIKey' );
 
 		if ( $sparkpostAPIKey === "" || !isset( $sparkpostAPIKey ) ) {
 			throw new MWException(
@@ -69,7 +68,7 @@ class SPHooks {
 		$httpClient = new GuzzleAdapter( new Client() );
 		$sparkpost = new SparkPost( $httpClient, [ 'key' => $sparkpostAPIKey ] );
 
-		return self::sendEmail( $headers, $to, $from, $subject, $body, $sparkpost, $configs );
+		return self::sendEmail( $headers, $to, $from, $subject, $body, $sparkpost, $config );
 	}
 
 	/**
@@ -81,7 +80,7 @@ class SPHooks {
 	 * @param string $subject
 	 * @param string $body
 	 * @param SparkPost|null $sparkpost
-	 * @param \Config $configs
+	 * @param \Config $config
 	 * @throws Exception
 	 *
 	 * @return bool
@@ -93,17 +92,18 @@ class SPHooks {
 		$subject,
 		$body,
 		SparkPost $sparkpost = null,
-		$configs
+		$config
 	) {
+		global $wgUser;
 		// Get options parameters from $configs if set in LocalSetting.php
 		// From "$wgSparkpostClickTracking", "$wgSparkpostOpenTracking" and
 		// "$wgSparkpostTransactional" respectively.
-		$click_tracking = $configs->get( 'SparkPostClickTracking' );
-		$open_tracking = $configs->get( 'SparkPostOpenTracking' );
-		$transactional = $configs->get( 'SparkPostTransactional' );
+		$click_tracking = $config->get( 'SparkPostClickTracking' );
+		$open_tracking = $config->get( 'SparkPostOpenTracking' );
+		$transactional = $config->get( 'SparkPostTransactional' );
 
-		// T215249: Check to see if $wgUserEmailUseReplyTo is true;
-		$reply_to = $configs->get( 'UserEmailUseReplyTo' );
+		// T215249: Get value of $wgUserEmailUseReplyTo to see if it's "true";
+		$reply_to = $config->get( 'UserEmailUseReplyTo' );
 
 		$sparkpost->setOptions( [ 'async' => false ] );
 		try {
@@ -120,7 +120,7 @@ class SPHooks {
 						'name' => $from->name,
 						'email' => $from->address
 					],
-					'reply_to' => $reply_to ? $from->address : null,
+					'reply_to' => $reply_to ? $wgUser->getEmail() : null,
 					'subject' => $subject,
 					'text' => $body
 				],
