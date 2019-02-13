@@ -3,10 +3,10 @@
 		"php": ">=5.6",
 		"php-http/httplug": "^1.0",
 		"sparkpost/sparkpost": "^2.1.0",
-		"guzzlehttp/guzzle": "^6.3"
+		"guzzlehttp/guzzle": "^6.3",
+		"php-http/guzzle6-adapter": "^1.0"
 	},
 	"require-dev": {
-		"php-http/guzzle6-adapter": "^1.0",
 		"jakub-onderka/php-parallel-lint": "1.0.0",
 		"jakub-onderka/php-console-highlighter": "0.3.2",
 		"mediawiki/mediawiki-codesniffer": "24.0.0",
