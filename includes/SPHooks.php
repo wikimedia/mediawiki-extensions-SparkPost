@@ -2,7 +2,6 @@
 
 namespace MediaWiki\SparkPost;
 
-use Exception;
 use MailAddress;
 use MWException;
 use RequestContext;
@@ -46,7 +45,8 @@ class SPHooks {
 	 * @param string $subject
 	 * @param string $body
 	 *
-	 * @return bool
+	 * @throws MWException
+	 * @return string
 	 */
 	public static function onAlternateUserMailer(
 		array $headers,
@@ -59,7 +59,7 @@ class SPHooks {
 		// From "$wgSparkPostAPIKey" in LocalSettings.php when defined.
 		$sparkpostAPIKey = $config->get( 'SparkPostAPIKey' );
 
-		if ( $sparkpostAPIKey === "" || !isset( $sparkpostAPIKey ) ) {
+		if ( $sparkpostAPIKey === '' || !isset( $sparkpostAPIKey ) ) {
 			throw new MWException(
 				'Please update your LocalSettings.php with the correct SparkPost API key.'
 			);
@@ -81,9 +81,8 @@ class SPHooks {
 	 * @param string $body
 	 * @param SparkPost|null $sparkpost
 	 * @param \Config $config
-	 * @throws Exception
 	 *
-	 * @return bool
+	 * @return string
 	 */
 	public static function sendEmail(
 		array $headers,
@@ -135,10 +134,8 @@ class SPHooks {
 			if ( !$results ) {
 				throw new MWException( "Bad response, email can't be sent!" );
 			}
-		} catch ( \Exception $e ) {
+		} catch ( MWException $e ) {
 			return $e->getMessage();
 		}
-
-		return false;
 	}
 }

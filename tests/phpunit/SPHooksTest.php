@@ -5,6 +5,7 @@ namespace MediaWiki\SparkPost;
 use MailAddress;
 use MediaWikiTestCase;
 use MWException;
+use SparkPost\SparkPostException;
 
 /**
  * Test for SPHooks code.
@@ -47,8 +48,7 @@ class SPHooksTest extends MediaWikiTestCase {
 	public function testOnAlternateUserMailerWithApiKeyAndInvalidDomain() {
 		$this->setConfig( 'TestAPIKeyString' );
 
-		// Note: Add a newline at the end of the response
-		$expected = '{"errors": [ {"message": "Forbidden."} ]}' . "\n";
+		$this->expectException( SparkPostException::class );
 		$actual = SPHooks::onAlternateUserMailer(
 			[ 'SomeHeader' => 'SomeValue' ],
 			[ new MailAddress( 'receiver@example.com' ) ],
@@ -56,7 +56,5 @@ class SPHooksTest extends MediaWikiTestCase {
 			'Some subject',
 			'Email body'
 		);
-
-		$this->assertSame( $expected, $actual );
 	}
 }
