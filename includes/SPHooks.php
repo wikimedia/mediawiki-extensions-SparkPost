@@ -93,7 +93,7 @@ class SPHooks {
 		SparkPost $sparkpost = null,
 		$config
 	) {
-		global $wgUser;
+		$user = RequestContext::getMain()->getUser();
 		// Get options parameters from $configs if set in LocalSetting.php
 		// From "$wgSparkpostClickTracking", "$wgSparkpostOpenTracking" and
 		// "$wgSparkpostTransactional" respectively.
@@ -119,7 +119,7 @@ class SPHooks {
 						'name' => $from->name,
 						'email' => $from->address
 					],
-					'reply_to' => $reply_to ? $wgUser->getEmail() : null,
+					'reply_to' => $reply_to ? $user->getEmail() : null,
 					'subject' => $subject,
 					'text' => $body
 				],
