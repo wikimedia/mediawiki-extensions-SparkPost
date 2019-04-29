@@ -1,14 +1,4 @@
 <?php
-
-namespace MediaWiki\SparkPost;
-
-use MailAddress;
-use MWException;
-use RequestContext;
-use GuzzleHttp\Client;
-use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
-use SparkPost\SparkPost;
-
 /**
  * Hooks for SparkPost extension for MediaWiki
  *
@@ -30,9 +20,18 @@ use SparkPost\SparkPost;
  * @file
  * @author Derick Alangi <alangiderick@gmail.com>
  *
- * @link https://www.mediawiki.org/wiki/Extension:SparkPost Documentation
+ * @link https://www.mediawiki.org/wiki/Extension:SparkPost
  * @ingroup Extensions
-*/
+ */
+
+namespace MediaWiki\SparkPost;
+
+use MailAddress;
+use MWException;
+use RequestContext;
+use GuzzleHttp\Client;
+use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
+use SparkPost\SparkPost;
 
 class SPHooks {
 
@@ -45,7 +44,7 @@ class SPHooks {
 	 * @param string $subject
 	 * @param string $body
 	 *
-	 * @throws MWException
+	 * @throws \Exception If self::sendEmail() fails for some reason
 	 * @return string
 	 */
 	public static function onAlternateUserMailer(
@@ -68,7 +67,7 @@ class SPHooks {
 		$httpClient = new GuzzleAdapter( new Client() );
 		$sparkpost = new SparkPost( $httpClient, [ 'key' => $sparkpostAPIKey ] );
 
-		return self::sendEmail( $headers, $to, $from, $subject, $body, $sparkpost, $config );
+		return self::sendEmail( $headers, $to, $from, $subject, $body, $config, $sparkpost );
 	}
 
 	/**
@@ -79,10 +78,11 @@ class SPHooks {
 	 * @param MailAddress $from
 	 * @param string $subject
 	 * @param string $body
-	 * @param SparkPost|null $sparkpost
 	 * @param \Config $config
+	 * @param SparkPost|null $sparkpost
 	 *
 	 * @return string
+	 * @throws \Exception If something wrong happens in trying to send the email
 	 */
 	public static function sendEmail(
 		array $headers,
@@ -90,8 +90,8 @@ class SPHooks {
 		MailAddress $from,
 		$subject,
 		$body,
-		SparkPost $sparkpost = null,
-		$config
+		$config,
+		SparkPost $sparkpost = null
 	) {
 		$user = RequestContext::getMain()->getUser();
 		// Get options parameters from $configs if set in LocalSetting.php
@@ -103,6 +103,10 @@ class SPHooks {
 
 		// T215249: Get value of $wgUserEmailUseReplyTo to see if it's "true";
 		$reply_to = $config->get( 'UserEmailUseReplyTo' );
+
+		if ( $sparkpost === null ) {
+			throw new \Exception( "SparkPost object isn't set, process aborted!" );
+		}
 
 		$sparkpost->setOptions( [ 'async' => false ] );
 		try {
