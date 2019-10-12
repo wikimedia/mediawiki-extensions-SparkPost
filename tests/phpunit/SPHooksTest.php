@@ -29,9 +29,9 @@ class SPHooksTest extends MediaWikiTestCase {
 	public function testOnAlternateUserMailerNoApiKey() {
 		$this->setConfig( '' );
 
-		$this->setExpectedException(
-			MWException::class, 'Please update your LocalSettings.php with the correct SparkPost API key.'
-		);
+		$this->expectException( MWException::class );
+		$this->expectExceptionMessage(
+			'Please update your LocalSettings.php with the correct SparkPost API key.' );
 
 		$actual = SPHooks::onAlternateUserMailer(
 			[ 'SomeHeader' => 'SomeValue' ],
