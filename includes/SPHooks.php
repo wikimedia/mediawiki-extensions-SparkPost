@@ -26,11 +26,11 @@
 
 namespace MediaWiki\SparkPost;
 
+use GuzzleHttp\Client;
+use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
 use MailAddress;
 use MWException;
 use RequestContext;
-use GuzzleHttp\Client;
-use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
 use SparkPost\SparkPost;
 
 class SPHooks {
