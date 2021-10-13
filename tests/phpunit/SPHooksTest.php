@@ -3,7 +3,7 @@
 namespace MediaWiki\SparkPost;
 
 use MailAddress;
-use MediaWikiTestCase;
+use MediaWikiIntegrationTestCase;
 use MWException;
 use SparkPost\SparkPostException;
 
@@ -13,7 +13,7 @@ use SparkPost\SparkPostException;
  * @author Derick Alangi
  * @coversDefaultClass \MediaWiki\SparkPost\SPHooks
  */
-class SPHooksTest extends MediaWikiTestCase {
+class SPHooksTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @param string $apiKey SparkPost API key
 	 */
