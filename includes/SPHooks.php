@@ -24,13 +24,15 @@
  * @ingroup Extensions
  */
 
-namespace MediaWiki\SparkPost;
+namespace MediaWiki\Extension\SparkPost;
 
+use Config;
+use Exception;
 use GuzzleHttp\Client;
 use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
 use MailAddress;
-use MWException;
 use RequestContext;
+use RuntimeException;
 use SparkPost\SparkPost;
 
 class SPHooks {
@@ -44,7 +46,7 @@ class SPHooks {
 	 * @param string $subject
 	 * @param string $body
 	 *
-	 * @throws \Exception If self::sendEmail() fails for some reason
+	 * @throws Exception If self::sendEmail() fails for some reason
 	 * @return string
 	 */
 	public static function onAlternateUserMailer(
@@ -59,7 +61,7 @@ class SPHooks {
 		$sparkpostAPIKey = $config->get( 'SparkPostAPIKey' );
 
 		if ( $sparkpostAPIKey === '' || !isset( $sparkpostAPIKey ) ) {
-			throw new MWException(
+			throw new Exception(
 				'Please update your LocalSettings.php with the correct SparkPost API key.'
 			);
 		}
@@ -78,11 +80,11 @@ class SPHooks {
 	 * @param MailAddress $from
 	 * @param string $subject
 	 * @param string $body
-	 * @param \Config $config
+	 * @param Config $config
 	 * @param SparkPost|null $sparkpost
 	 *
 	 * @return string
-	 * @throws \Exception If something wrong happens in trying to send the email
+	 * @throws RuntimeException|Exception If something wrong happens in trying to send the email
 	 */
 	public static function sendEmail(
 		array $headers,
@@ -97,15 +99,15 @@ class SPHooks {
 		// Get options parameters from $configs if set in LocalSetting.php
 		// From "$wgSparkpostClickTracking", "$wgSparkpostOpenTracking" and
 		// "$wgSparkpostTransactional" respectively.
-		$click_tracking = $config->get( 'SparkPostClickTracking' );
-		$open_tracking = $config->get( 'SparkPostOpenTracking' );
+		$clickTracking = $config->get( 'SparkPostClickTracking' );
+		$openTracking = $config->get( 'SparkPostOpenTracking' );
 		$transactional = $config->get( 'SparkPostTransactional' );
 
 		// T215249: Get value of $wgUserEmailUseReplyTo to see if it's "true";
-		$reply_to = $config->get( 'UserEmailUseReplyTo' );
+		$replyTo = $config->get( 'UserEmailUseReplyTo' );
 
 		if ( $sparkpost === null ) {
-			throw new \Exception( "SparkPost object isn't set, process aborted!" );
+			throw new Exception( "SparkPost object isn't set, process aborted!" );
 		}
 
 		$sparkpost->setOptions( [ 'async' => false ] );
@@ -114,8 +116,8 @@ class SPHooks {
 			// `array` and `MailAddress` object respectively
 			$results = $sparkpost->transmissions->post( [
 				'options' => [
-					'click_tracking' => $click_tracking ?: false,
-					'open_tracking' => $open_tracking ?: false,
+					'click_tracking' => $clickTracking ?: false,
+					'open_tracking' => $openTracking ?: false,
 					'transactional' => $transactional ?: false
 				],
 				'content' => [
@@ -123,7 +125,7 @@ class SPHooks {
 						'name' => $from->name,
 						'email' => $from->address
 					],
-					'reply_to' => $reply_to ? $user->getEmail() : null,
+					'reply_to' => $replyTo ? $user->getEmail() : null,
 					'subject' => $subject,
 					'text' => $body
 				],
@@ -136,9 +138,9 @@ class SPHooks {
 				]
 			] );
 			if ( !$results ) {
-				throw new MWException( "Bad response, email can't be sent!" );
+				throw new RuntimeException( "Bad response, email can't be sent!" );
 			}
-		} catch ( MWException $e ) {
+		} catch ( RuntimeException $e ) {
 			return $e->getMessage();
 		}
 	}
