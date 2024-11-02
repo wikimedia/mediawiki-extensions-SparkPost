@@ -93,7 +93,7 @@ class SPHooks {
 		$subject,
 		$body,
 		$config,
-		SparkPost $sparkpost = null
+		?SparkPost $sparkpost = null
 	) {
 		$user = RequestContext::getMain()->getUser();
 		// Get options parameters from $configs if set in LocalSetting.php
