@@ -1,6 +1,5 @@
 {
 	"require": {
-		"php": ">=5.6",
 		"php-http/httplug": "2.4.0",
 		"sparkpost/sparkpost": "^2.1.0",
 		"guzzlehttp/guzzle": "7.4.5",
