@@ -29,7 +29,7 @@ namespace MediaWiki\Extension\SparkPost;
 use Config;
 use Exception;
 use GuzzleHttp\Client;
-use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
+use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
 use MailAddress;
 use RequestContext;
 use RuntimeException;
