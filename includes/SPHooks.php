@@ -60,8 +60,8 @@ class SPHooks {
 		// From "$wgSparkPostAPIKey" in LocalSettings.php when defined.
 		$sparkpostAPIKey = $config->get( 'SparkPostAPIKey' );
 
-		if ( $sparkpostAPIKey === '' || !isset( $sparkpostAPIKey ) ) {
-			throw new Exception(
+		if ( $sparkpostAPIKey === '' || $sparkpostAPIKey === null ) {
+			throw new RuntimeException(
 				'Please update your LocalSettings.php with the correct SparkPost API key.'
 			);
 		}
@@ -107,7 +107,7 @@ class SPHooks {
 		$replyTo = $config->get( 'UserEmailUseReplyTo' );
 
 		if ( $sparkpost === null ) {
-			throw new Exception( "SparkPost object isn't set, process aborted!" );
+			throw new RuntimeException( "SparkPost object isn't set, process aborted!" );
 		}
 
 		$sparkpost->setOptions( [ 'async' => false ] );
